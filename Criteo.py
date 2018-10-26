@@ -1,11 +1,14 @@
 #! python 3
 
+#! python 3
+
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler,Imputer
 from sklearn.linear_model import LogisticRegression
 from numpy import genfromtxt
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.preprocessing import OneHotEncoder
+import matplotlib.pyplot as plt 
 
 # 训练集与测试集的提取
 app_train = pd.read_csv('train.csv')
@@ -71,6 +74,15 @@ log_reg_prob = grd_lr.predict_proba(grd_enc.transform(grd.apply(test)[:, :, 0]))
 
 print(log_reg_prob)
 
+#绘制预测概率图像
+plt.plot(log_reg_prob,color='r')
+plt.ylabel("Probility")
+plt.show()
+
+#将预测数据导出到sbumit.csv文件中
+submit['Label'] = log_reg_prob
+submit.to_csv('submit.csv', index = False)
+
 #Logarithmic Loss评估函数
 def logloss(y_true, y_pred, eps=1e-15):
     import numpy as np
@@ -87,6 +99,3 @@ def logloss(y_true, y_pred, eps=1e-15):
     return loss / len(y_true)
 
 print ("Use log_loss(),the result is",format(logloss(y_true, log_reg_prob)))
-submit['Label'] = log_reg_prob
-# 输出到文件
-submit.to_csv('submit.csv', index = False)
